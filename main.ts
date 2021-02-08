@@ -10,6 +10,9 @@ enum ActionKind {
 namespace SpriteKind {
     export const sky = SpriteKind.create()
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    jump()
+})
 function initAnimations () {
     walkL = animation.createAnimation(ActionKind.WalkingL, 100)
     animation.attachAnimation(cat, walkL)
@@ -117,12 +120,16 @@ function initAnimations () {
         `)
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    jump()
+})
+function jump () {
     if (cat.isHittingTile(CollisionDirection.Bottom)) {
+        music.magicWand.play()
         jumping = true
         cat.vy = -85
         cat.say("weee!", 5000)
     }
-})
+}
 let heroFacingLeft = false
 let jumping = false
 let idleR: animation.Animation = null
@@ -279,6 +286,9 @@ game.onUpdate(function () {
     if (cat.isHittingTile(CollisionDirection.Bottom) && jumping == true) {
         jumping = false
         cat.say("boing!", 500)
+    }
+    if (cat.vy > 50 && !(jumping)) {
+        cat.say("wooooh!", 1000)
     }
     if (cat.vx < 0) {
         heroFacingLeft = true
